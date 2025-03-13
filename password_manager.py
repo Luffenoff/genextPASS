@@ -4,10 +4,10 @@ import string
 import random
 import os
 from dotenv import load_dotenv
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
+from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                             QHBoxLayout, QPushButton, QLabel, QLineEdit, 
                             QTableWidget, QTableWidgetItem, QMessageBox)
-from PyQt6.QtCore import Qt
+from PySide6.QtCore import Qt
 from cryptography.fernet import Fernet
 import base64
 from cryptography.hazmat.primitives import hashes
@@ -81,7 +81,18 @@ class PasswordManager(QMainWindow):
             key = Fernet.generate_key()
             with open('.env', 'a') as f:
                 f.write(f'\nENCRYPTION_KEY={key.decode()}\n')
-        self.cipher_suite = Fernet(key.encode() if isinstance(key, str) else key)
+        else:
+            try:
+                # Пробуем использовать существующий ключ
+                key = key.encode()
+                Fernet(key)
+            except:
+                # Если ключ некорректный, генерируем новый
+                key = Fernet.generate_key()
+                with open('.env', 'a') as f:
+                    f.write(f'\nENCRYPTION_KEY={key.decode()}\n')
+        
+        self.cipher_suite = Fernet(key)
         
     def init_database(self):
         conn = sqlite3.connect(self.db_name)
