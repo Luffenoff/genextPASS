@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ## Настройка
 
-1. Скопируйте файл `.env.example` в `.env`:
+1. Скопируйте файл `.env` в `.env`:
 ```bash
 cp .env.example .env
 ```
